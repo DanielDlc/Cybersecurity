@@ -33,7 +33,7 @@ Saída esperada:
        valid_lft 1905sec preferred_lft 1905sec
 ```
 
-### **Zerar a Interface `eth1` caso 'precise'**
+### **Zerar a Interface `eth1` caso necessário**
 Se precisar remover a interface virtual criada:
 ```bash
 sudo ip link delete eth1
