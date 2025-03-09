@@ -10,40 +10,36 @@ O `iptables` é a ferramenta padrão para configurar firewalls no Linux. Ele per
 - Aplicação de políticas de segurança personalizadas.
 - Implementação de regras para evitar ataques.
 
-Para visualizar as regras atuais no firewall do Kali, utilize:
+### **Visualizar Regras Atuais**
+Para exibir as regras de firewall ativas no Kali Linux:
 ```bash
 sudo iptables -L -v -n
 ```
-📌 **Isso exibe as regras ativas e o tráfego sendo permitido ou bloqueado.**
+📌 Isso exibe as regras ativas e o tráfego sendo permitido ou bloqueado.
 
-
-### Para visualizar o ip:
+### **Verificar Endereço IP**
 ```bash
 ip -4 a
 ```
-📌 **Isso exibe informações sobre endereço de ip.**
+📌 Isso exibe informações sobre o endereço IP da máquina.
 
----
-
-### Verificar se o ssh esta roando no kali:
+### **Verificar e Ativar o SSH**
+Verificar se o SSH está rodando no Kali:
 ```bash
 sudo systemctl status ssh
 ```
-
----
-
-### Ativar ssh:
+Ativar o SSH:
 ```bash
 sudo systemctl start ssh
 ```
-📌 **Com isso podemos ativar ssh .**
+📌 Isso permite conexões SSH ao Kali.
 
+---
 
-## 2️⃣ Filtragem de Pacotes (Filter)
+## 2️⃣ Filtragem de Pacotes (`Filter`)
 Os firewalls realizam filtragem de pacotes através de três canais principais:
 
 ### **1️⃣ Canal Input – Controla o tráfego que entra no Kali**
-
 📌 **Objetivo:** Bloquear conexões SSH para impedir que outros dispositivos se conectem ao Kali.
 
 🔹 **Comando para bloquear conexões SSH (porta 22):**
@@ -51,7 +47,8 @@ Os firewalls realizam filtragem de pacotes através de três canais principais:
 sudo iptables -A INPUT -p tcp --dport 22 -j DROP
 ```
 
-🔹 **Teste:** Tente acessar o Kali de outro computador via SSH:
+🔹 **Teste:** Tente acessar o Kali de outro computador via SSH "irei usar kali":
+
 ```bash
 ssh user@192.168.66.3
 ```
@@ -65,7 +62,6 @@ sudo iptables -D INPUT -p tcp --dport 22 -j DROP
 ---
 
 ### **2️⃣ Canal Output – Controla o tráfego originado do Kali**
-
 📌 **Objetivo:** Bloquear o envio de pacotes ICMP (ping) para a internet.
 
 🔹 **Comando para impedir pings saindo do Kali:**
@@ -87,10 +83,9 @@ sudo iptables -D OUTPUT -p icmp --icmp-type echo-request -j DROP
 ---
 
 ### **3️⃣ Canal Forward – Controla o tráfego que atravessa o Kali**
-
 📌 **Objetivo:** Bloquear o acesso da rede interna a um site específico.
 
-#### **1️⃣ Exibir a rede atual**
+#### **1️⃣ Exibir a Rede Atual**
 Antes de configurar a interface virtual, veja as interfaces de rede disponíveis:
 ```bash
 ip -4 a
@@ -144,27 +139,35 @@ ip -4 a
 
 ## 3️⃣ Finalizando os Testes
 
-### 🔍 **Verificando regras ativas**
+### **🔍 Verificando regras ativas**
 Para conferir todas as regras que estão ativas no firewall:
 ```bash
 sudo iptables -L -v -n
 ```
 
-### 🔄 **Removendo todas as regras do firewall**
+### **🔄 Resetando todas as regras do firewall**
 Caso precise restaurar o firewall para o estado inicial, execute:
 ```bash
 sudo iptables -F
+sudo iptables -X
+sudo iptables -Z
 ```
-📌 **Isso limpa todas as regras e permite todo o tráfego novamente.**
+📌 **O que esses comandos fazem?**
+- `iptables -F` → **Limpa todas as regras** ativas.
+- `iptables -X` → **Remove chains personalizadas**.
+- `iptables -Z` → **Reseta os contadores de pacotes**.
+
+Agora, verifique se as regras foram apagadas:
+```bash
+sudo iptables -L -v -n
+```
+✅ **As chains devem aparecer vazias.**
 
 ---
 
 ## 4️⃣ Conclusão
-
-* O iptables insere as regras dentro do Netfilter, que roda dentro do kernel Linux.
-* Cada pacote que entra no sistema é comparado sequencialmente com as regras da chain correspondente (INPUT, OUTPUT, FORWARD).
-* O Netfilter percorre a lista até encontrar uma regra correspondente ou chegar ao final e aplicar a policy padrão (normalmente ACCEPT).
+O `iptables` insere as regras dentro do **Netfilter**, que roda dentro do **kernel Linux**.
+Cada pacote que entra no sistema é comparado **sequencialmente** com as regras da chain correspondente (`INPUT`, `OUTPUT`, `FORWARD`).
+O **Netfilter percorre a lista** até encontrar uma regra correspondente **ou chegar ao final** e aplicar a **policy padrão** (normalmente `ACCEPT`).
 
 Este documento demonstra como utilizar `iptables` no Kali Linux para **controlar tráfego de entrada (Input), saída (Output) e passagem (Forward)**. Os testes ilustram o uso do firewall para garantir maior controle e segurança na rede.
-
-
